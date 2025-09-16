@@ -36,24 +36,39 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
       )}
     >
       <CardContent className="p-3 h-full flex flex-col justify-between">
-        <div className="space-y-1">
-          <div
-            className={cn(
-              "text-sm font-medium truncate",
-              match.winner?.id === match.player1?.id && "text-primary font-bold",
+        <div className="space-y-2">
+          {/* Player 1 Row */}
+          <div className="flex items-center justify-between">
+            <div
+              className={cn(
+                "text-sm font-medium w-32 truncate text-left",
+                match.winner?.id === match.player1?.id && "text-primary font-bold",
+              )}
+            >
+              {match.player1?.name || "TBD"}
+            </div>
+            {match.isCompleted && match.score1 !== undefined && (
+              <div className="text-sm font-semibold min-w-[24px] text-right">
+                {match.score1}
+              </div>
             )}
-          >
-            {match.player1?.name || "TBD"}
-            {match.isCompleted && match.score1 !== undefined && <span className="ml-2 text-xs">({match.score1})</span>}
           </div>
-          <div
-            className={cn(
-              "text-sm font-medium truncate",
-              match.winner?.id === match.player2?.id && "text-primary font-bold",
+          
+          {/* Player 2 Row */}
+          <div className="flex items-center justify-between">
+            <div
+              className={cn(
+                "text-sm font-medium w-32 truncate text-left",
+                match.winner?.id === match.player2?.id && "text-primary font-bold",
+              )}
+            >
+              {match.player2?.name || "TBD"}
+            </div>
+            {match.isCompleted && match.score2 !== undefined && (
+              <div className="text-sm font-semibold min-w-[24px] text-right">
+                {match.score2}
+              </div>
             )}
-          >
-            {match.player2?.name || "TBD"}
-            {match.isCompleted && match.score2 !== undefined && <span className="ml-2 text-xs">({match.score2})</span>}
           </div>
         </div>
 
