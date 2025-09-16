@@ -4,8 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { TournamentBracket } from "@/components/tournament-bracket";
+import { TournamentHeader } from "@/components/tournament-header";
+import { createTournament } from "@/lib/tournament-utils";
 
 const bracketOptions = [4, 8, 16, 32, 64, 128];
+
+// Helper untuk generate tournament dari nama dan pemain
+function generateTournament(name: string, players: string[]) {
+  const tournament = createTournament(name, players.length);
+  const round1Matches = tournament.matches.filter(m => m.round === 1);
+  for (let i = 0; i < round1Matches.length; i++) {
+    const match = round1Matches[i];
+    match.player1 = { id: i*2+1, name: players[i*2], seed: i*2+1 };
+    match.player2 = { id: i*2+2, name: players[i*2+1], seed: i*2+2 };
+  }
+  return tournament;
+}
 
 export default function CreateTournamentPage() {
   const [bracketSize, setBracketSize] = useState<number>(16);
@@ -14,11 +29,14 @@ export default function CreateTournamentPage() {
   const [handicaps, setHandicaps] = useState<(number|null)[]>(Array(16).fill(null));
   const [isSaved, setIsSaved] = useState(false);
   const [randomize, setRandomize] = useState(false);
+  const [showBracket, setShowBracket] = useState(false);
+  const [generatedTournament, setGeneratedTournament] = useState<any>(null);
 
   // Update player input fields when bracket size changes
   const handleBracketChange = (size: number) => {
     setBracketSize(size);
     setPlayers(Array(size).fill(""));
+    setHandicaps(Array(size).fill(null));
   };
 
   const handlePlayerChange = (idx: number, value: string) => {
@@ -154,12 +172,31 @@ export default function CreateTournamentPage() {
                   </label>
                 </div>
                 <div className="flex gap-4">
-                  <Button className="bg-accent text-white">Create Bracket</Button>
+                  <Button
+                    className="bg-accent text-white"
+                    onClick={() => {
+                      // Jika randomize aktif, acak urutan pemain
+                      const playerList = randomize ? [...players].sort(() => Math.random() - 0.5) : [...players];
+                      const tournament = generateTournament(tournamentName || "Tournament", playerList);
+                      setGeneratedTournament(tournament);
+                      setShowBracket(true);
+                    }}
+                  >
+                    Create Bracket
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         )}
+        {/* Bracket hasil generate muncul di bawah form drawing */}
+        {showBracket && generatedTournament && (
+          <div className="mt-8">
+            <TournamentHeader tournament={generatedTournament} />
+            <TournamentBracket tournament={generatedTournament} onTournamentUpdate={() => {}} />
+          </div>
+        )}
+
       </div>
     </div>
   );

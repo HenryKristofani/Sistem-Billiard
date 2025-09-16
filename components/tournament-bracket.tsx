@@ -64,7 +64,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
                       >
                         <MatchCard match={match} onUpdateMatch={handleMatchUpdate} />
                       </div>
-                    </div>
+                     </div>
                   )
                 })}
               </div>
