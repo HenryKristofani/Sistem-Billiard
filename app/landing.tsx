@@ -18,7 +18,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8">
-              <Link href="/tournament">Get Started</Link>
+              <Link href="/create-tournament">New Tournament</Link>
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
               View Demo

@@ -11,7 +11,7 @@ export default function BracketsPage() {
   const [currentTournament, setCurrentTournament] = useState<Tournament>(tournament)
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white">
       <div className="container mx-auto py-8">
         <TournamentHeader tournament={currentTournament} />
         <TournamentBracket tournament={currentTournament} onTournamentUpdate={setCurrentTournament} />

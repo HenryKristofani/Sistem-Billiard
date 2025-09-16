@@ -27,7 +27,7 @@ export function Navbar() {
               <span>Home</span>
             </Link>
             <Link
-              href="/tournament"
+              href="/brackets"
               className="flex items-center space-x-2 text-gray-200 hover:text-accent transition-colors duration-200"
             >
               <Trophy className="h-4 w-4" />
@@ -69,7 +69,7 @@ export function Navbar() {
               <span>Home</span>
             </Link>
             <Link
-              href="/tournament"
+              href="/brackets"
               className="flex items-center space-x-2 text-gray-200 hover:text-accent transition-colors duration-200"
             >
               <Trophy className="h-4 w-4" />
