@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { TournamentBracket } from "@/components/tournament-bracket";
-import { TournamentHeader } from "@/components/tournament-header";
 import { createTournament } from "@/lib/tournament-utils";
 
 const bracketOptions = [4, 8, 16, 32, 64, 128];
@@ -190,10 +189,16 @@ export default function CreateTournamentPage() {
           </div>
         )}
         {/* Bracket hasil generate muncul di bawah form drawing */}
+
         {showBracket && generatedTournament && (
           <div className="mt-8">
-            <TournamentHeader tournament={generatedTournament} />
+            <div className="mb-4 text-xl font-bold text-white">Preview Bracket</div>
             <TournamentBracket tournament={generatedTournament} onTournamentUpdate={() => {}} />
+            <div className="flex justify-end mt-6">
+              <Button className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow">
+                Mulai Turnamen
+              </Button>
+            </div>
           </div>
         )}
 
