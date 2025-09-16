@@ -138,13 +138,19 @@ export default function CreateTournamentPage() {
               <CardContent>
                 <div className="flex items-center gap-4 mb-6">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={randomize}
-                      onChange={() => setRandomize((v) => !v)}
-                      className="form-checkbox h-5 w-5 text-accent bg-[#23272f] border-gray-700 rounded focus:ring-0"
-                    />
-                    <span className="text-sm">Randomize</span>
+                    <button
+                      type="button"
+                      aria-pressed={randomize}
+                      onClick={() => setRandomize((v) => !v)}
+                      className={`relative w-14 h-8 rounded-full transition-colors duration-200 focus:outline-none ${randomize ? 'bg-green-700' : 'bg-[#23272f]'}`}
+                      style={{ minWidth: '56px' }}
+                    >
+                      <span
+                        className="absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow transition-transform duration-200"
+                        style={{ transform: randomize ? 'translateX(24px)' : 'translateX(0)' }}
+                      />
+                    </button>
+                    <span className="text-sm">Randomize Bracket</span>
                   </label>
                 </div>
                 <div className="flex gap-4">
