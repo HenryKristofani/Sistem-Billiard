@@ -12,6 +12,8 @@ export default function CreateTournamentPage() {
   const [tournamentName, setTournamentName] = useState("");
   const [players, setPlayers] = useState<string[]>(Array(16).fill(""));
   const [handicaps, setHandicaps] = useState<(number|null)[]>(Array(16).fill(null));
+  const [isSaved, setIsSaved] = useState(false);
+  const [randomize, setRandomize] = useState(false);
 
   // Update player input fields when bracket size changes
   const handleBracketChange = (size: number) => {
@@ -34,6 +36,9 @@ export default function CreateTournamentPage() {
       return copy;
     });
   };
+
+  // Validasi nama peserta wajib diisi
+  const allNamesFilled = players.every((name) => name.trim() !== "");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white py-12">
@@ -104,10 +109,51 @@ export default function CreateTournamentPage() {
               <Button asChild variant="outline" className="bg-[#23272f] border-gray-700 text-gray-200">
                 <Link href="/">Cancel</Link>
               </Button>
-              <Button className="bg-accent text-white">Create Tournament</Button>
+              <Button
+                className="bg-accent text-white"
+                disabled={!allNamesFilled}
+                onClick={() => setIsSaved(true)}
+              >
+                Simpan
+              </Button>
+              <Button
+                variant="outline"
+                className="bg-[#23272f] border-gray-700 text-gray-200"
+                onClick={() => setIsSaved(false)}
+                disabled={!isSaved}
+              >
+                Edit
+              </Button>
             </div>
           </CardContent>
         </Card>
+
+        {/* Drawing & Bracket Form muncul setelah Simpan */}
+        {isSaved && (
+          <div className="mt-8">
+            <Card className="bg-[#18181b] border-gray-700 text-white">
+              <CardHeader>
+                <CardTitle className="text-xl">Drawing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4 mb-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={randomize}
+                      onChange={() => setRandomize((v) => !v)}
+                      className="form-checkbox h-5 w-5 text-accent bg-[#23272f] border-gray-700 rounded focus:ring-0"
+                    />
+                    <span className="text-sm">Randomize</span>
+                  </label>
+                </div>
+                <div className="flex gap-4">
+                  <Button className="bg-accent text-white">Create Bracket</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

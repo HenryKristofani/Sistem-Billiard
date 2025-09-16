@@ -137,7 +137,7 @@ export default function LandingPage() {
             Start creating professional tournament brackets in seconds. No registration required.
           </p>
           <Button asChild size="lg" className="text-lg px-8">
-            <Link href="/tournament">Create Tournament Now</Link>
+            <Link href="/create-tournament">Create Tournament Now</Link>
           </Button>
         </div>
       </section>
