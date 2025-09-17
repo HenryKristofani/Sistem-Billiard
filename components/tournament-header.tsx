@@ -17,20 +17,20 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
   return (
     <div className="w-full mb-6">
       <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold text-primary mb-2">{tournament.name}</h1>
-        <p className="text-muted-foreground">Single Elimination Tournament • {tournament.totalPlayers} Players</p>
+        <h1 className="text-4xl font-bold text-gray-200 mb-2">{tournament.name}</h1>
+        <p className="text-gray-400">Single Elimination Tournament • {tournament.totalPlayers} Players</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card>
+        <Card className="bg-[#1a1a1d] border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Progress</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-200">Progress</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-gray-200">
               {completedMatches}/{totalMatches}
             </div>
-            <div className="w-full bg-muted rounded-full h-2 mt-2">
+            <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
               <div
                 className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -39,25 +39,25 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[#1a1a1d] border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Current Round</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-200">Current Round</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-gray-200">
               {tournament.matches.find((m) => !m.isCompleted)?.round || tournament.totalRounds}
             </div>
-            <p className="text-sm text-muted-foreground">of {tournament.totalRounds} rounds</p>
+            <p className="text-sm text-gray-400">of {tournament.totalRounds} rounds</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[#1a1a1d] border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Champion</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-200">Champion</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">{champion ? champion.name : "TBD"}</div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               {champion ? "🏆 Tournament Winner" : "Tournament in progress"}
             </p>
           </CardContent>

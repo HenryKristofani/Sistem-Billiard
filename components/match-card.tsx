@@ -31,15 +31,15 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
     <div className="flex flex-col items-center">
       <Card
         className={cn(
-          "w-48 h-20 transition-all duration-200 hover:shadow-md",
-          match.isCompleted && "bg-primary/10 border-primary/30",
+          "w-48 h-20 transition-all duration-200 hover:shadow-md bg-[#1a1a1d] border-gray-700",
+          match.isCompleted && "bg-primary/20 border-primary/50",
           !canPlay && "opacity-50",
         )}
       >
-        <CardContent className="p-3 h-full flex flex-col items-center justify-center">
+        <CardContent className="p-3 h-full flex flex-col items-center justify-center text-gray-200">
           <div className="flex flex-col items-center justify-center w-full h-full gap-2">
             {/* Player 1 Row */}
-            <div className="flex items-center justify-between w-full border-b border-gray-200 pb-1">
+            <div className="flex items-center justify-between w-full border-b border-gray-600 pb-1">
               <span
                 className={cn(
                   "text-sm font-medium flex-1 truncate pr-2",
@@ -51,7 +51,7 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
               {match.isCompleted && match.score1 !== undefined && (
                 <span className={cn(
                   "text-sm font-bold w-6 text-center px-1 rounded",
-                  Number(match.score1) > Number(match.score2) ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                  Number(match.score1) > Number(match.score2) ? "bg-green-600 text-white" : "bg-red-600 text-white"
                 )}>
                   {match.score1}
                 </span>
@@ -70,7 +70,7 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
               {match.isCompleted && match.score2 !== undefined && (
                 <span className={cn(
                   "text-sm font-bold w-6 text-center px-1 rounded",
-                  Number(match.score2) > Number(match.score1) ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                  Number(match.score2) > Number(match.score1) ? "bg-green-600 text-white" : "bg-red-600 text-white"
                 )}>
                   {match.score2}
                 </span>
