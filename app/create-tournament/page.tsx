@@ -123,9 +123,6 @@ export default function CreateTournamentPage() {
               </div>
             </div>
             <div className="flex justify-end gap-4">
-              <Button asChild variant="outline" className="bg-[#23272f] border-gray-700 text-gray-200">
-                <Link href="/">Cancel</Link>
-              </Button>
               <Button
                 className="bg-accent text-white"
                 disabled={!allNamesFilled}
@@ -202,6 +199,11 @@ export default function CreateTournamentPage() {
           </div>
         )}
 
+      </div>
+      <div className="max-w-2xl mx-auto mt-8">
+        <Button asChild variant="destructive" className="bg-red-700 border-red-700 text-white">
+          <Link href="/">Cancel</Link>
+        </Button>
       </div>
     </div>
   );
