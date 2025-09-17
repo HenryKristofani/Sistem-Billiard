@@ -14,9 +14,9 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
   const [zoom, setZoom] = useState(1)
 
   const MATCH_HEIGHT = 100 // Tinggi minimum untuk satu match card
-  const MATCH_WIDTH = 280 // Lebar card
+  const MATCH_WIDTH = 200 // Lebar card yang lebih kecil
   const CARD_MARGIN = 40 // Jarak antara card dan garis
-  const ROUND_GAP = 240 // Jarak antar round lebih besar untuk garis penghubung
+  const ROUND_GAP = 320 // Jarak antar round yang lebih besar
   const CONNECTOR_LENGTH = 40 // Panjang garis horizontal
 
   const handleMatchUpdate = (matchId: string, winnerId: number, score1: number, score2: number) => {
@@ -104,7 +104,74 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
 
               {/* Container matches */}
               <div className="relative" style={{ minHeight: `${totalHeight}px` }}>
-                {/* Layer card di atas garis */}
+                {/* Connector lines */}
+                {round < tournament.totalRounds && matches.map((match, index) => {
+                  const yPos = round === 1 
+                    ? index * spacing
+                    : (index * 2 + 1) * (spacing / 2) - (MATCH_HEIGHT / 2)
+                  const nextMatchYPos = Math.floor(index / 2) * (spacing * 2)
+                  const isEvenMatch = index % 2 === 0
+                  
+                  return (
+                    <svg
+                      key={`connector-${match.id}`}
+                      className="absolute"
+                      style={{ 
+                        left: MATCH_WIDTH, 
+                        top: yPos + MATCH_HEIGHT/2,
+                        height: isEvenMatch ? spacing : spacing/2,
+                        width: ROUND_GAP - MATCH_WIDTH/4,
+                        zIndex: 0,
+                        overflow: 'visible'
+                      }}
+                    >
+                      {/* Horizontal line from card */}
+                      <line 
+                        x1="0" 
+                        y1="0" 
+                        x2={ROUND_GAP/2 - 20} 
+                        y2="0" 
+                        stroke="#666" 
+                        strokeWidth="2"
+                      />
+                      
+                      {/* Vertical connector */}
+                      {isEvenMatch ? (
+                        <line 
+                          x1={ROUND_GAP/2 - 20} 
+                          y1="0" 
+                          x2={ROUND_GAP/2 - 20} 
+                          y2={spacing} 
+                          stroke="#666" 
+                          strokeWidth="2"
+                        />
+                      ) : (
+                        <line 
+                          x1={ROUND_GAP/2 - 20} 
+                          y1="0" 
+                          x2={ROUND_GAP/2 - 20} 
+                          y2={-spacing/2} 
+                          stroke="#666" 
+                          strokeWidth="2"
+                        />
+                      )}
+                      
+                      {/* Horizontal line to next round (only for odd index) */}
+                      {!isEvenMatch && (
+                        <line 
+                          x1={ROUND_GAP/2 - 20} 
+                          y1={-spacing/2} 
+                          x2={ROUND_GAP - 150} 
+                          y2={-spacing/2} 
+                          stroke="#666" 
+                          strokeWidth="2"
+                        />
+                      )}
+                    </svg>
+                  )
+                })}
+
+                {/* Match cards */}
                 {matches.map((match, index) => {
                   // Kalkulasi posisi yang lebih presisi
                   const yPos = round === 1 
