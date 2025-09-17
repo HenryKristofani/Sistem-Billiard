@@ -36,6 +36,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
     if (round === totalRounds - 3) return "Round of 16"
     if (round === totalRounds - 4) return "Round of 32"
     if (round === totalRounds - 5) return "Round of 64"
+    if (round === totalRounds - 6) return "Round of 128"
     return `Round ${round}`
   }
 
