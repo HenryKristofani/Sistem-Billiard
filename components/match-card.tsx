@@ -39,33 +39,39 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
         <CardContent className="p-3 h-full flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center w-full h-full gap-2">
             {/* Player 1 Row */}
-            <div className="flex items-center justify-center w-full">
+            <div className="flex items-center justify-between w-full border-b border-gray-200 pb-1">
               <span
                 className={cn(
-                  "text-sm font-medium text-center w-full",
+                  "text-sm font-medium flex-1 truncate pr-2",
                   match.winner?.id === match.player1?.id && "text-primary font-bold",
                 )}
               >
                 {match.player1?.name || "TBD"}
               </span>
               {match.isCompleted && match.score1 !== undefined && (
-                <span className="text-sm font-semibold ml-2 text-right">
+                <span className={cn(
+                  "text-sm font-bold w-6 text-center px-1 rounded",
+                  Number(match.score1) > Number(match.score2) ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                )}>
                   {match.score1}
                 </span>
               )}
             </div>
             {/* Player 2 Row */}
-            <div className="flex items-center justify-center w-full">
+            <div className="flex items-center justify-between w-full pt-1">
               <span
                 className={cn(
-                  "text-sm font-medium text-center w-full",
+                  "text-sm font-medium flex-1 truncate pr-2",
                   match.winner?.id === match.player2?.id && "text-primary font-bold",
                 )}
               >
                 {match.player2?.name || "TBD"}
               </span>
               {match.isCompleted && match.score2 !== undefined && (
-                <span className="text-sm font-semibold ml-2 text-right">
+                <span className={cn(
+                  "text-sm font-bold w-6 text-center px-1 rounded",
+                  Number(match.score2) > Number(match.score1) ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                )}>
                   {match.score2}
                 </span>
               )}
