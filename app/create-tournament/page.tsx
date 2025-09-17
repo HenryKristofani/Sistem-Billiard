@@ -191,8 +191,8 @@ export default function CreateTournamentPage() {
           <div className="mt-8">
             <div className="mb-4 text-xl font-bold text-white">Preview Bracket</div>
             <TournamentBracket tournament={generatedTournament} onTournamentUpdate={() => {}} />
-            <div className="flex justify-end mt-6">
-              <Button className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow">
+            <div className="flex justify-center mt-6">
+              <Button className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow w-full max-w-2xl">
                 Mulai Turnamen
               </Button>
             </div>
