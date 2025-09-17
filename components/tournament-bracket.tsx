@@ -56,7 +56,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Cari nama pemain..."
+          placeholder="search players..."
           className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-[#1a1a1d] text-gray-200 focus:outline-none focus:ring focus:ring-primary"
         />
         <div className="flex gap-2 justify-center">
