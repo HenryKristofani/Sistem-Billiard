@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { TournamentBracket } from "@/components/tournament-bracket";
 import { createTournament } from "@/lib/tournament-utils";
+import { createTournamentInDB } from "@/lib/tournament-db";
+import { fetchTournamentDetail } from "@/lib/fetch-tournament-detail";
 
 const bracketOptions = [4, 8, 16, 32, 64, 128];
 
@@ -57,6 +59,52 @@ export default function CreateTournamentPage() {
   // Validasi nama peserta wajib diisi
   const allNamesFilled = players.every((name) => name.trim() !== "");
 
+  // Handler for creating tournament in DB
+  const handleCreateBracket = async () => {
+    try {
+      const playerList = randomize ? [...players].sort(() => Math.random() - 0.5) : [...players];
+      const tournament = await createTournamentInDB(
+        tournamentName || "Tournament",
+        playerList,
+        handicaps
+      );
+      // Fetch full detail from DB
+      const detail = await fetchTournamentDetail(tournament.id);
+      // Transform DB data to TournamentBracket format
+      const bracketData = transformDbToBracket(detail);
+      setGeneratedTournament(bracketData);
+      setShowBracket(true);
+    } catch (error) {
+      console.error('Error creating tournament:', error);
+      // TODO: show error UI
+    }
+  };
+
+  // Transform DB data to TournamentBracket format
+  function transformDbToBracket({ tournament, players, matches }: any) {
+    // Map player id to player object
+  const playerMap = Object.fromEntries((players as any[]).map((p: any) => [p.id, p]));
+    // Enrich matches with player objects
+  const enrichedMatches = (matches as any[]).map((m: any) => ({
+      ...m,
+      player1: m.player1_id ? playerMap[m.player1_id] : null,
+      player2: m.player2_id ? playerMap[m.player2_id] : null,
+      winner: m.winner_id ? playerMap[m.winner_id] : null,
+      score1: m.score_player1,
+      score2: m.score_player2,
+      isCompleted: m.is_completed,
+      round: m.round,
+      id: m.id,
+    }));
+    // Calculate totalRounds
+    const totalRounds = Math.log2(tournament.total_players);
+    return {
+      ...tournament,
+      matches: enrichedMatches,
+      totalRounds,
+      totalPlayers: tournament.total_players,
+    };
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white py-12">
       <div className="max-w-2xl mx-auto">
@@ -170,13 +218,7 @@ export default function CreateTournamentPage() {
                 <div className="flex gap-4">
                   <Button
                     className="bg-accent text-white"
-                    onClick={() => {
-                      // Jika randomize aktif, acak urutan pemain
-                      const playerList = randomize ? [...players].sort(() => Math.random() - 0.5) : [...players];
-                      const tournament = generateTournament(tournamentName || "Tournament", playerList);
-                      setGeneratedTournament(tournament);
-                      setShowBracket(true);
-                    }}
+                    onClick={handleCreateBracket}
                   >
                     Create Bracket
                   </Button>
