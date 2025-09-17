@@ -13,10 +13,10 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
   const [search, setSearch] = useState("")
   const [zoom, setZoom] = useState(1)
 
-  const MATCH_HEIGHT = 140 // Tinggi minimum untuk satu match card
+  const MATCH_HEIGHT = 100 // Tinggi minimum untuk satu match card
   const MATCH_WIDTH = 280 // Lebar card
   const CARD_MARGIN = 40 // Jarak antara card dan garis
-  const ROUND_GAP = 200 // Jarak antar round yang lebih besar
+  const ROUND_GAP = 240 // Jarak antar round lebih besar untuk garis penghubung
   const CONNECTOR_LENGTH = 40 // Panjang garis horizontal
 
   const handleMatchUpdate = (matchId: string, winnerId: number, score1: number, score2: number) => {
@@ -83,8 +83,17 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
       >
         {Array.from({ length: tournament.totalRounds }, (_, i) => i + 1).map((round) => {
           const matches = getRoundMatches(round).filter(m => matchContainsPlayer(m, search))
-          const spacing = MATCH_HEIGHT * Math.pow(2, round - 1) + 40 // Tambah padding ekstra
-          const totalHeight = matches.length * spacing
+          
+          // Perhitungan spacing yang lebih presisi untuk tiap round
+          const baseSpacing = MATCH_HEIGHT + 40 // Spacing dasar untuk round pertama
+          const roundMultiplier = round === 1 ? 1 : Math.pow(2, round - 1)
+          const spacing = baseSpacing * roundMultiplier
+          
+          // Hitung total height berdasarkan jumlah match di round ini
+          const totalHeight = Math.max(
+            matches.length * spacing,
+            round > 1 ? getRoundMatches(round - 1).length * (baseSpacing * Math.pow(2, round - 2)) : 0
+          )
 
           return (
             <div key={round} className="flex flex-col relative">
@@ -95,10 +104,12 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
 
               {/* Container matches */}
               <div className="relative" style={{ minHeight: `${totalHeight}px` }}>
-                {/* Tidak ada garis penghubung antar bagan */}
                 {/* Layer card di atas garis */}
                 {matches.map((match, index) => {
-                  const yPos = index * spacing + (spacing - MATCH_HEIGHT) / 2
+                  // Kalkulasi posisi yang lebih presisi
+                  const yPos = round === 1 
+                    ? index * spacing
+                    : (index * 2 + 1) * (spacing / 2) - (MATCH_HEIGHT / 2)
                   return (
                     <div key={match.id}>
                       <div 
