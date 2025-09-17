@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,7 @@ function generateTournament(name: string, players: string[]) {
 }
 
 export default function CreateTournamentPage() {
+  const router = useRouter();
   const [bracketSize, setBracketSize] = useState<number>(16);
   const [tournamentName, setTournamentName] = useState("");
   const [players, setPlayers] = useState<string[]>(Array(16).fill(""));
@@ -105,6 +107,12 @@ export default function CreateTournamentPage() {
       totalPlayers: tournament.total_players,
     };
   }
+  // Handler for starting tournament (redirect)
+  const handleStartTournament = () => {
+    if (generatedTournament?.id) {
+      router.push(`/tournaments/${generatedTournament.id}/bracket`);
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white py-12">
       <div className="max-w-2xl mx-auto">
@@ -234,7 +242,10 @@ export default function CreateTournamentPage() {
             <div className="mb-4 text-xl font-bold text-white">Preview Bracket</div>
             <TournamentBracket tournament={generatedTournament} onTournamentUpdate={() => {}} />
             <div className="flex justify-center mt-6">
-              <Button className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow w-full max-w-2xl">
+              <Button
+                className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow w-full max-w-2xl"
+                onClick={handleStartTournament}
+              >
                 Mulai Turnamen
               </Button>
             </div>
