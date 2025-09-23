@@ -21,6 +21,20 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
   const handleSubmit = (winnerId: number) => {
     const s1 = Number.parseInt(score1) || 0
     const s2 = Number.parseInt(score2) || 0
+    
+    // Validasi sederhana
+    if (s1 < 0 || s2 < 0) {
+      alert('Score tidak boleh negatif')
+      return
+    }
+    
+    // Pastikan winner sesuai dengan skor tertinggi
+    if ((winnerId === match.player1?.id && s1 <= s2) || 
+        (winnerId === match.player2?.id && s2 <= s1)) {
+      alert('Pemenang harus memiliki skor lebih tinggi')
+      return
+    }
+    
     onUpdateMatch(match.id, winnerId, s1, s2)
     setIsOpen(false)
   }

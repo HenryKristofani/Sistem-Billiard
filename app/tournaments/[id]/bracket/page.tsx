@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { fetchTournamentDetail } from "@/lib/fetch-tournament-detail";
 import { TournamentHeader } from "@/components/tournament-header";
 import { TournamentBracket } from "@/components/tournament-bracket";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function TournamentBracketPage() {
   const params = useParams();
@@ -28,7 +29,11 @@ export default function TournamentBracketPage() {
   }, [tournamentId]);
 
   function transformDbToBracket({ tournament, players, matches }: any) {
-    const playerMap = Object.fromEntries((players as any[]).map((p: any) => [p.id, p]));
+    const playerMap = Object.fromEntries((players as any[]).map((p: any) => [p.id, {
+      id: p.id,
+      name: p.name,
+      seed: p.seed_number
+    }]));
     const enrichedMatches = (matches as any[]).map((m: any) => ({
       ...m,
       player1: m.player1_id ? playerMap[m.player1_id] : null,
@@ -39,6 +44,8 @@ export default function TournamentBracketPage() {
       round: m.round,
       score2: m.score_player2,
       id: m.id,
+      match_number: m.match_number,
+      position: m.match_number // Use match_number as position
     }));
     const totalRounds = Math.log2(tournament.total_players);
     return {
@@ -69,6 +76,7 @@ export default function TournamentBracketPage() {
         <TournamentHeader tournament={tournament} />
         <TournamentBracket tournament={tournament} onTournamentUpdate={handleTournamentUpdate} />
       </div>
+      <Toaster />
     </main>
   );
 }

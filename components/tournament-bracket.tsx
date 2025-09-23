@@ -2,7 +2,8 @@
 import type { Tournament } from "@/types/tournament"
 import { useState } from "react"
 import { MatchCard } from "./match-card"
-import { updateMatchInDB } from "@/lib/update-match"
+import { updateMatch } from "@/lib/match-db"
+import { toast } from "sonner"
 
 interface TournamentBracketProps {
   tournament: Tournament
@@ -21,18 +22,25 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
 
   const handleMatchUpdate = async (matchId: string, winnerId: number, score1: number, score2: number) => {
     try {
-      // First update the database
-      await updateMatchInDB(matchId, winnerId, score1, score2)
-      // Then trigger a tournament refresh
-      onTournamentUpdate()
+      const success = await updateMatch(matchId, winnerId, score1, score2)
+      
+      if (success) {
+        // Refresh tournament data
+        await onTournamentUpdate()
+        toast.success('Match updated successfully')
+      } else {
+        toast.error('Failed to update match')
+      }
     } catch (error) {
       console.error('Failed to update match:', error)
-      // TODO: Show error to user
+      toast.error('Failed to update match')
     }
   }
 
   const getRoundMatches = (round: number) => {
-    return tournament.matches.filter((match) => match.round === round)
+    return tournament.matches
+      .filter((match) => match.round === round)
+      .sort((a, b) => (a.match_number || 0) - (b.match_number || 0))
   }
 
   const getRoundName = (round: number) => {
