@@ -35,9 +35,9 @@ export default function TournamentBracketPage() {
       player2: m.player2_id ? playerMap[m.player2_id] : null,
       winner: m.winner_id ? playerMap[m.winner_id] : null,
       score1: m.score_player1,
-      score2: m.score_player2,
       isCompleted: m.is_completed,
       round: m.round,
+      score2: m.score_player2,
       id: m.id,
     }));
     const totalRounds = Math.log2(tournament.total_players);
@@ -53,11 +53,21 @@ export default function TournamentBracketPage() {
   if (error) return <div className="text-center py-12 text-red-500">{error}</div>;
   if (!tournament) return <div className="text-center py-12">Tournament not found</div>;
 
+  const handleTournamentUpdate = async () => {
+    try {
+      const detail = await fetchTournamentDetail(tournamentId);
+      const bracketData = transformDbToBracket(detail);
+      setTournament(bracketData);
+    } catch (err) {
+      setError('Failed to refresh bracket');
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#0f0f10] to-[#1a1a1d] text-gray-200">
       <div className="container mx-auto py-8">
         <TournamentHeader tournament={tournament} />
-        <TournamentBracket tournament={tournament} onTournamentUpdate={() => {}} />
+        <TournamentBracket tournament={tournament} onTournamentUpdate={handleTournamentUpdate} />
       </div>
     </main>
   );

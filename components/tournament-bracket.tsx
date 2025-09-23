@@ -2,11 +2,11 @@
 import type { Tournament } from "@/types/tournament"
 import { useState } from "react"
 import { MatchCard } from "./match-card"
-import { updateMatchResult } from "@/lib/tournament-utils"
+import { updateMatchInDB } from "@/lib/update-match"
 
 interface TournamentBracketProps {
   tournament: Tournament
-  onTournamentUpdate: (tournament: Tournament) => void
+  onTournamentUpdate: () => Promise<void>
 }
 
 export function TournamentBracket({ tournament, onTournamentUpdate }: TournamentBracketProps) {
@@ -19,9 +19,16 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
   const ROUND_GAP = 320 // Jarak antar round yang lebih besar
   const CONNECTOR_LENGTH = 40 // Panjang garis horizontal
 
-  const handleMatchUpdate = (matchId: string, winnerId: number, score1: number, score2: number) => {
-    const updatedTournament = updateMatchResult(tournament, matchId, winnerId, score1, score2)
-    onTournamentUpdate(updatedTournament)
+  const handleMatchUpdate = async (matchId: string, winnerId: number, score1: number, score2: number) => {
+    try {
+      // First update the database
+      await updateMatchInDB(matchId, winnerId, score1, score2)
+      // Then trigger a tournament refresh
+      onTournamentUpdate()
+    } catch (error) {
+      console.error('Failed to update match:', error)
+      // TODO: Show error to user
+    }
   }
 
   const getRoundMatches = (round: number) => {
