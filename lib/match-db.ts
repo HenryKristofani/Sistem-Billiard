@@ -30,9 +30,12 @@ export async function updateMatch(matchId: string, winnerId: number, score1: num
       return false
     }
 
-    // 3. Calculate next match details
+    // 3. Find next match
+    // In each round, match numbers start from 1
+    // If current match is number N, next match will be ceiling(N/2)
     const nextRound = currentMatch.round + 1
     const nextMatchNumber = Math.ceil(currentMatch.match_number / 2)
+    // In a round, odd numbers (1,3,5..) go to player1, even numbers (2,4,6..) go to player2
     const isEvenMatch = currentMatch.match_number % 2 === 0
 
     console.log('Match update info:', {
@@ -55,28 +58,8 @@ export async function updateMatch(matchId: string, winnerId: number, score1: num
       return false
     }
 
-    // If next match doesn't exist, create it
-    if (!existingMatches || existingMatches.length === 0) {
-      console.log('Creating next match:', {
-        round: nextRound,
-        matchNumber: nextMatchNumber
-      })
-
-      const { error: createError } = await supabase
-        .from('matches')
-        .insert({
-          tournament_id: currentMatch.tournament_id,
-          round: nextRound,
-          match_number: nextMatchNumber,
-          [isEvenMatch ? 'player2_id' : 'player1_id']: winnerId,
-          is_completed: false
-        })
-
-      if (createError) {
-        console.error('Error creating next match:', createError)
-        return false
-      }
-    } else {
+    // Only update next match if it already exists
+    if (existingMatches && existingMatches.length > 0) {
       // Update existing next match
       console.log('Updating existing match:', {
         matchId: existingMatches[0].id,

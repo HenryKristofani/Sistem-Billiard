@@ -58,15 +58,17 @@ export async function createTournamentInDB(name: string, players: string[], hand
 function generateMatchesData(tournamentId: string, playerCount: number) {
   const matches = []
   const rounds = Math.log2(playerCount)
-  let matchNumber = 1
 
+  // Generate matches for each round
   for (let round = 1; round <= rounds; round++) {
     const matchesInRound = playerCount / Math.pow(2, round)
+    
+    // For each round, match numbers start from 1
     for (let i = 0; i < matchesInRound; i++) {
       matches.push({
         tournament_id: tournamentId,
         round,
-        match_number: matchNumber++,
+        match_number: i + 1, // Match numbers start from 1 in each round
         is_completed: false,
       })
     }
