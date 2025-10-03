@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
 import { TournamentBracket } from "@/components/tournament-bracket";
 import { createTournament } from "@/lib/tournament-utils";
@@ -35,6 +36,75 @@ export default function CreateTournamentPage() {
   const [randomize, setRandomize] = useState(false);
   const [showBracket, setShowBracket] = useState(false);
   const [generatedTournament, setGeneratedTournament] = useState<any>(null);
+  const [showExitWarning, setShowExitWarning] = useState(false);
+
+  // Check if form has data
+  const hasFormData = tournamentName.trim() !== "" || players.some(name => name.trim() !== "");
+
+  // Handle browser/tab close warning and back navigation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasFormData) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    // Handle browser back/forward navigation
+    const handlePopState = (e: PopStateEvent) => {
+      if (hasFormData) {
+        e.preventDefault();
+        window.history.pushState(null, '', window.location.href);
+        setShowExitWarning(true);
+      }
+    };
+
+    // Push initial state to enable popstate detection
+    window.history.pushState(null, '', window.location.href);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [hasFormData]);
+
+  // Handle navigation warning
+  const handleExitAttempt = () => {
+    if (hasFormData) {
+      setShowExitWarning(true);
+    } else {
+      router.push('/');
+    }
+  };
+
+  // Handle discard - delete tournament from DB if exists
+  const handleDiscard = async () => {
+    try {
+      if (generatedTournament?.id) {
+        // Delete tournament from database
+        await supabase.from('tournaments').delete().eq('id', generatedTournament.id);
+        console.log('Tournament deleted from database');
+      }
+      // Clear the warning flag before navigation
+      setShowExitWarning(false);
+      // Remove the popstate protection temporarily
+      window.removeEventListener('popstate', () => {});
+      router.push('/');
+    } catch (error) {
+      console.error('Error deleting tournament:', error);
+      // Still navigate even if delete fails
+      setShowExitWarning(false);
+      router.push('/');
+    }
+  };
+
+  // Handle continue - close popup and stay
+  const handleContinue = () => {
+    setShowExitWarning(false);
+  };
 
   // Update player input fields when bracket size changes
   const handleBracketChange = (size: number) => {
@@ -287,10 +357,42 @@ export default function CreateTournamentPage() {
 
       </div>
       <div className="max-w-2xl mx-auto mt-8">
-        <Button asChild variant="destructive" className="bg-red-700 border-red-700 text-white">
-          <Link href="/">Cancel</Link>
+        <Button 
+          variant="destructive" 
+          className="bg-red-700 border-red-700 text-white"
+          onClick={handleExitAttempt}
+        >
+          Cancel
         </Button>
       </div>
+
+      {/* Exit Warning Dialog */}
+      <Dialog open={showExitWarning} onOpenChange={setShowExitWarning}>
+        <DialogContent className="bg-[#18181b] border-gray-700 text-white">
+          <DialogHeader>
+            <DialogTitle>Peringatan</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Anda memiliki data yang belum disimpan. Apa yang ingin Anda lakukan?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-4 mt-6">
+            <Button
+              variant="destructive"
+              onClick={handleDiscard}
+              className="flex-1"
+            >
+              Discard {generatedTournament ? "" : ""}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleContinue}
+              className="flex-1 bg-[#23272f] border-gray-700 text-white hover:bg-[#2a2e35]"
+            >
+              Continue
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
