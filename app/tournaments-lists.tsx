@@ -42,6 +42,23 @@ export default function TournamentsListPage() {
 									<div>
 										<div className="text-lg font-semibold">{tournament.name}</div>
 										<div className="text-sm text-gray-400">{tournament.total_players} pemain</div>
+										<div className="text-sm mt-1">
+											Status: <span className={`px-2 py-1 rounded text-xs font-medium ${
+												tournament.status === 'draft' ? 'bg-yellow-600 text-yellow-100' :
+												tournament.status === 'started' ? 'bg-green-600 text-green-100' :
+												tournament.status === 'in_progress' ? 'bg-blue-600 text-blue-100' :
+												tournament.status === 'ongoing' ? 'bg-blue-600 text-blue-100' :
+												tournament.status === 'completed' ? 'bg-gray-600 text-gray-100' :
+												'bg-gray-500 text-gray-100'
+											}`}>
+												{tournament.status === 'draft' ? 'Draft' :
+												 tournament.status === 'started' ? 'Dimulai' :
+												 tournament.status === 'in_progress' ? 'Berlangsung' :
+												 tournament.status === 'ongoing' ? 'Berlangsung' :
+												 tournament.status === 'completed' ? 'Selesai' :
+												 tournament.status || 'Unknown'}
+											</span>
+										</div>
 									</div>
 									<Link
 										href={`/tournaments/${tournament.id}/bracket`}
