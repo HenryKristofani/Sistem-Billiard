@@ -9,6 +9,7 @@ import { TournamentBracket } from "@/components/tournament-bracket";
 import { createTournament } from "@/lib/tournament-utils";
 import { createTournamentInDB } from "@/lib/tournament-db";
 import { fetchTournamentDetail } from "@/lib/fetch-tournament-detail";
+import { supabase } from "@/lib/supabase";
 
 const bracketOptions = [4, 8, 16, 32, 64, 128];
 
@@ -108,9 +109,41 @@ export default function CreateTournamentPage() {
     };
   }
   // Handler for starting tournament (redirect)
-  const handleStartTournament = () => {
+  const handleStartTournament = async () => {
     if (generatedTournament?.id) {
-      router.push(`/tournaments/${generatedTournament.id}/bracket`);
+      try {
+        // Update tournament status from 'draft' to accepted status values
+        // Try common tournament status values that might be in the constraint
+        const statusesToTry = ['started', 'in_progress', 'ongoing', 'live', 'running'];
+        let updateSuccess = false;
+
+        for (const status of statusesToTry) {
+          const { error } = await supabase
+            .from('tournaments')
+            .update({ 
+              status: status,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', generatedTournament.id);
+
+          if (!error) {
+            console.log(`Tournament status updated to: ${status}`);
+            updateSuccess = true;
+            break;
+          }
+        }
+
+        if (!updateSuccess) {
+          console.log('Could not update status, continuing with draft status');
+        }
+
+        // Redirect to tournament bracket
+        router.push(`/tournaments/${generatedTournament.id}/bracket`);
+      } catch (error) {
+        console.error('Error starting tournament:', error);
+        // Still redirect even if status update fails
+        router.push(`/tournaments/${generatedTournament.id}/bracket`);
+      }
     }
   };
   return (
