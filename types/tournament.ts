@@ -19,6 +19,7 @@ export interface Match {
 }
 
 export interface Tournament {
+  status: string | undefined
   id: string
   name: string
   totalPlayers: number

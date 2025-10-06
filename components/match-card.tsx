@@ -8,6 +8,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import type { Match } from "@/types/tournament"
 import { cn } from "@/lib/utils"
 
+// Extend the Window interface to include 'toast'
+declare global {
+  interface Window {
+    toast?: {
+      error: (msg: string) => void
+      [key: string]: any
+    }
+  }
+}
+
 interface MatchCardProps {
   match: Match
   onUpdateMatch: (matchId: string, winnerId: number, score1: number, score2: number) => void
