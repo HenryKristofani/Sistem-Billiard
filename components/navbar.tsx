@@ -50,7 +50,7 @@ export function Navbar() {
               <span>Tournaments</span>
             </Link>
             <Link
-              href="/about"
+              href="/about-us"
               className="flex items-center space-x-2 text-gray-200 hover:text-accent transition-colors duration-200"
             >
               <Info className="h-4 w-4" />
@@ -104,7 +104,7 @@ export function Navbar() {
                 <span>Tournaments</span>
               </Link>
               <Link
-                href="/about"
+                href="/about-us"
                 className="flex items-center space-x-2 text-gray-200 hover:text-accent transition-colors duration-200"
                 onClick={() => setMobileOpen(false)}
               >
