@@ -354,7 +354,7 @@ export default function CreateTournamentPage() {
                 className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow w-full max-w-2xl"
                 onClick={handleStartTournament}
               >
-                Mulai Turnamen
+                Start Tournament
               </Button>
             </div>
           </div>

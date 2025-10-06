@@ -146,7 +146,7 @@ export default function LandingPage() {
       <footer className="py-8 px-4 border-t border-gray-700">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gray-500">
-            Built with Next.js and TypeScript. Perfect for billiard tournaments and competitions.
+            HENRY RAJIN IBADAH
           </p>
         </div>
       </footer>
