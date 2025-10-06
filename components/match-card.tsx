@@ -84,7 +84,7 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardP
                   match.winner?.id === match.player1?.id && "text-primary font-bold",
                 )}
               >
-                {match.player1 ? `${match.player1.name} (${match.player1.handicap || 0})` : "TBD"}
+                {match.player1 ? `${match.player1.name}${typeof match.player1.handicap === 'number' ? ` (${match.player1.handicap})` : ''}` : "TBD"}
               </span>
               {match.isCompleted && match.score1 !== undefined && (
                 <span className={cn(
@@ -103,7 +103,7 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardP
                   match.winner?.id === match.player2?.id && "text-primary font-bold",
                 )}
               >
-                {match.player2 ? `${match.player2.name} (${match.player2.handicap || 0})` : "TBD"}
+                {match.player2 ? `${match.player2.name}${typeof match.player2.handicap === 'number' ? ` (${match.player2.handicap})` : ''}` : "TBD"}
               </span>
               {match.isCompleted && match.score2 !== undefined && (
                 <span className={cn(
