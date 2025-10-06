@@ -66,38 +66,41 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
   }
 
   return (
-    <div className="w-full overflow-x-auto py-12 bg-gradient-to-br from-[#0f0f10] to-[#1a1a1d]">
-      <div className="max-w-md mx-auto mb-8 flex flex-col gap-4">
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="search players..."
-          className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-[#1a1a1d] text-gray-200 focus:outline-none focus:ring focus:ring-primary"
-        />
-        <div className="flex gap-2 justify-center">
-          <button
-            className="px-3 py-1 rounded bg-gray-800 text-gray-200 font-semibold hover:bg-gray-700"
-            onClick={() => setZoom(z => Math.max(0.5, z - 0.1))}
-            aria-label="Zoom Out"
-          >
-            -
-          </button>
-          <span className="px-2 text-sm font-medium text-gray-200">Zoom: {(zoom * 100).toFixed(0)}%</span>
-          <button
-            className="px-3 py-1 rounded bg-gray-800 text-gray-200 font-semibold hover:bg-gray-700"
-            onClick={() => setZoom(z => Math.min(2, z + 0.1))}
-            aria-label="Zoom In"
-          >
-            +
-          </button>
+    <div className="w-full bg-gradient-to-br from-[#0f0f10] to-[#1a1a1d]">
+      <div className="sticky top-0 left-0 w-full z-50 bg-[#0f0f10] py-4 px-4 shadow-lg border-b border-gray-800">
+        <div className="max-w-md mx-auto flex flex-col gap-4">
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="search players..."
+            className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-[#1a1a1d] text-gray-200 focus:outline-none focus:ring focus:ring-primary"
+          />
+          <div className="flex gap-2 justify-center">
+            <button
+              className="px-3 py-1 rounded bg-gray-800 text-gray-200 font-semibold hover:bg-gray-700"
+              onClick={() => setZoom(z => Math.max(0.5, z - 0.1))}
+              aria-label="Zoom Out"
+            >
+              -
+            </button>
+            <span className="px-2 text-sm font-medium text-gray-200">Zoom: {(zoom * 100).toFixed(0)}%</span>
+            <button
+              className="px-3 py-1 rounded bg-gray-800 text-gray-200 font-semibold hover:bg-gray-700"
+              onClick={() => setZoom(z => Math.min(2, z + 0.1))}
+              aria-label="Zoom In"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
-      <div
-        className="flex px-8 min-w-max"
-        style={{ gap: `${ROUND_GAP}px`, transform: `scale(${zoom})`, transformOrigin: 'top left', transition: 'transform 0.2s' }}
-      >
-        {Array.from({ length: tournament.totalRounds }, (_, i) => i + 1).map((round) => {
+      <div className="overflow-x-auto">
+        <div
+          className="flex min-w-max px-8 pt-4"
+          style={{ gap: `${ROUND_GAP}px`, transform: `scale(${zoom})`, transformOrigin: 'top left', transition: 'transform 0.2s' }}
+        >
+          {Array.from({ length: tournament.totalRounds }, (_, i) => i + 1).map((round) => {
           const matches = getRoundMatches(round).filter(m => matchContainsPlayer(m, search))
           
           // Perhitungan spacing yang lebih presisi untuk tiap round
@@ -208,6 +211,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
             </div>
           )
         })}
+        </div>
       </div>
     </div>
   )
