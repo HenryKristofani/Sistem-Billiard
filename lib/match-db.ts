@@ -80,6 +80,33 @@ export async function updateMatch(matchId: string, winnerId: number, score1: num
       }
     }
 
+    // Check if this was the final match or if all matches are completed
+    const { data: allMatches, error: allMatchesError } = await supabase
+      .from('matches')
+      .select('is_completed')
+      .eq('tournament_id', currentMatch.tournament_id)
+
+    if (allMatchesError) {
+      console.error('Error checking matches completion:', allMatchesError)
+      return false
+    }
+
+    // If all matches are completed, update tournament status to 'completed'
+    if (allMatches.every(m => m.is_completed)) {
+      const { error: tournamentUpdateError } = await supabase
+        .from('tournaments')
+        .update({ 
+          status: 'completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentMatch.tournament_id)
+
+      if (tournamentUpdateError) {
+        console.error('Error updating tournament status:', tournamentUpdateError)
+        return false
+      }
+    }
+
     return true
   } catch (error) {
     console.error('Error in updateMatch:', error)

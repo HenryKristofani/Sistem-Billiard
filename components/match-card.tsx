@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog"
 import type { Match } from "@/types/tournament"
 import { cn } from "@/lib/utils"
 
@@ -103,6 +103,9 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Match Result</DialogTitle>
+              <DialogDescription>
+                Enter the score for both players and select the winner.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
