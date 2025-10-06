@@ -3,12 +3,26 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { User, Trophy, Home, Info } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const navRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setMobileOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
   return (
-    <nav className="bg-[#18181b] border-b border-gray-700 sticky top-0 z-50 backdrop-blur-sm text-white">
+    <nav ref={navRef} className="bg-[#18181b] border-b border-gray-700 sticky top-0 z-50 backdrop-blur-sm text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
