@@ -199,7 +199,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
                         className="absolute left-0" 
                         style={{ top: `${yPos}px`, zIndex: 1 }}
                       >
-                        <MatchCard match={match} onUpdateMatch={handleMatchUpdate} />
+                        <MatchCard match={match} onUpdateMatch={handleMatchUpdate} tournamentStatus={tournament.status} />
                       </div>
                      </div>
                   )

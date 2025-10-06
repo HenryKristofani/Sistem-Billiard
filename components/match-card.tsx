@@ -11,9 +11,10 @@ import { cn } from "@/lib/utils"
 interface MatchCardProps {
   match: Match
   onUpdateMatch: (matchId: string, winnerId: number, score1: number, score2: number) => void
+  tournamentStatus?: string
 }
 
-export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
+export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardProps) {
   const [score1, setScore1] = useState(match.score1?.toString() || "")
   const [score2, setScore2] = useState(match.score2?.toString() || "")
   const [isOpen, setIsOpen] = useState(false)
@@ -40,6 +41,19 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
   }
 
   const canPlay = match.player1 && match.player2
+  const canSetScore = canPlay && !match.isCompleted && tournamentStatus === 'ongoing'
+
+  const handleSetScoreClick = () => {
+    if (tournamentStatus !== 'ongoing') {
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Turnamen belum dimulai')
+      } else {
+        alert('Turnamen belum dimulai')
+      }
+      return
+    }
+    setIsOpen(true)
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -93,60 +107,65 @@ export function MatchCard({ match, onUpdateMatch }: MatchCardProps) {
           </div>
         </CardContent>
       </Card>
-      {canPlay && !match.isCompleted && (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" variant="outline" className="h-6 text-xs bg-transparent mt-2">
-              Set Score
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Match Result</DialogTitle>
-              <DialogDescription>
-                Enter the score for both players and select the winner.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{match.player1?.name}</label>
-                  <Input
-                    type="number"
-                    value={score1}
-                    onChange={(e) => setScore1(e.target.value)}
-                    placeholder="Score"
-                  />
+      {canPlay && !match.isCompleted && tournamentStatus === 'ongoing' && (
+        <>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-6 text-xs bg-transparent mt-2"
+            onClick={() => setIsOpen(true)}
+          >
+            Set Score
+          </Button>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Match Result</DialogTitle>
+                <DialogDescription>
+                  Enter the score for both players and select the winner.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">{match.player1?.name}</label>
+                    <Input
+                      type="number"
+                      value={score1}
+                      onChange={(e) => setScore1(e.target.value)}
+                      placeholder="Score"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">{match.player2?.name}</label>
+                    <Input
+                      type="number"
+                      value={score2}
+                      onChange={(e) => setScore2(e.target.value)}
+                      placeholder="Score"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{match.player2?.name}</label>
-                  <Input
-                    type="number"
-                    value={score2}
-                    onChange={(e) => setScore2(e.target.value)}
-                    placeholder="Score"
-                  />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleSubmit(match.player1!.id)}
+                    className="flex-1"
+                    disabled={!score1 || !score2}
+                  >
+                    {match.player1?.name} Wins
+                  </Button>
+                  <Button
+                    onClick={() => handleSubmit(match.player2!.id)}
+                    className="flex-1"
+                    disabled={!score1 || !score2}
+                  >
+                    {match.player2?.name} Wins
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleSubmit(match.player1!.id)}
-                  className="flex-1"
-                  disabled={!score1 || !score2}
-                >
-                  {match.player1?.name} Wins
-                </Button>
-                <Button
-                  onClick={() => handleSubmit(match.player2!.id)}
-                  className="flex-1"
-                  disabled={!score1 || !score2}
-                >
-                  {match.player2?.name} Wins
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </div>
   )
