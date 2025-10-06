@@ -32,7 +32,8 @@ export default function TournamentBracketPage() {
     const playerMap = Object.fromEntries((players as any[]).map((p: any) => [p.id, {
       id: p.id,
       name: p.name,
-      seed: p.seed_number
+      seed: p.seed_number,
+      handicap: p.handicap
     }]));
     const enrichedMatches = (matches as any[]).map((m: any) => ({
       ...m,

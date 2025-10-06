@@ -2,6 +2,7 @@ export interface Player {
   id: number
   name: string
   seed: number
+  handicap?: number
 }
 
 export interface Match {
