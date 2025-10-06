@@ -37,6 +37,7 @@ export default function CreateTournamentPage() {
   const [showBracket, setShowBracket] = useState(false);
   const [generatedTournament, setGeneratedTournament] = useState<any>(null);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isCreatingBracket, setIsCreatingBracket] = useState(false);
 
   // Check if form has data
   const hasFormData = tournamentName.trim() !== "" || players.some(name => name.trim() !== "");
@@ -134,6 +135,7 @@ export default function CreateTournamentPage() {
 
   // Handler for creating tournament in DB
   const handleCreateBracket = async () => {
+    setIsCreatingBracket(true);
     try {
       const playerList = randomize ? [...players].sort(() => Math.random() - 0.5) : [...players];
       const tournament = await createTournamentInDB(
@@ -150,6 +152,8 @@ export default function CreateTournamentPage() {
     } catch (error) {
       console.error('Error creating tournament:', error);
       // TODO: show error UI
+    } finally {
+      setIsCreatingBracket(false);
     }
   };
 
@@ -330,6 +334,7 @@ export default function CreateTournamentPage() {
                   <Button
                     className="bg-accent text-white"
                     onClick={handleCreateBracket}
+                    disabled={isCreatingBracket || showBracket}
                   >
                     Create Bracket
                   </Button>
