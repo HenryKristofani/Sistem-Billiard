@@ -105,12 +105,14 @@ export default function LandingPage() {
           <div className="bg-[#18181b] rounded-lg p-8 border border-gray-700">
             <div className="aspect-video bg-[#23272f] rounded-lg flex items-center justify-center mb-6">
               <div className="text-center w-full">
-                <img
-                  src="/braket.png"
-                  alt="Tournament Bracket Demo"
-                  className="mx-auto mb-4 rounded-lg shadow-lg max-h-80 object-contain"
-                  style={{ background: '#18181b' }}
-                />
+                  <a href="/tournaments">
+                    <img
+                      src="/braket.png"
+                      alt="Tournament Bracket Demo"
+                      className="mx-auto mb-4 rounded-lg shadow-lg max-h-80 object-contain cursor-pointer hover:scale-105 transition-transform"
+                      style={{ background: '#18181b' }}
+                    />
+                  </a>
                 <p className="text-lg font-medium text-white">Interactive Tournament Bracket</p>
                 <p className="text-gray-400">Click "Get Started" to create your first tournament</p>
               </div>
