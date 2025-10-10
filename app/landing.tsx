@@ -7,8 +7,15 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
+      <section
+        className="relative py-20 px-4 text-center"
+        style={{
+          backgroundImage: "url('/chua.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="max-w-4xl mx-auto bg-black/60 rounded-xl p-8">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
             Create Your Bracket <span className="text-accent">Master Your Tournament</span>
           </h1>
@@ -95,8 +102,15 @@ export default function LandingPage() {
       </section>
 
       {/* Demo Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section
+        className="py-20 px-4"
+        style={{
+          backgroundImage: "url('/demo.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="max-w-4xl mx-auto text-center bg-black/60 rounded-xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-balance text-white">See It In Action</h2>
           <p className="text-xl text-gray-300 mb-8 text-pretty">
             Experience the smooth bracket visualization and intuitive tournament management
