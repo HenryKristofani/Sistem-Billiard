@@ -110,14 +110,14 @@ export default function LandingPage() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="max-w-4xl mx-auto text-center bg-black/60 rounded-xl p-8">
+        <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6 text-balance text-white">See It In Action</h2>
           <p className="text-xl text-gray-300 mb-8 text-pretty">
             Experience the smooth bracket visualization and intuitive tournament management
           </p>
 
-          <div className="bg-[#18181b] rounded-lg p-8 border border-gray-700">
-            <div className="aspect-video bg-[#23272f] rounded-lg flex items-center justify-center mb-6">
+          <div className="bg-[#18181b84] rounded-lg p-8 ">
+            <div className="aspect-video  flex items-center justify-center mb-6">
               <div className="text-center w-full">
                   <a href="/tournaments">
                     <img
