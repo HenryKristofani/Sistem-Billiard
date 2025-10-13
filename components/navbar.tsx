@@ -2,12 +2,36 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { User, Trophy, Home, Info } from "lucide-react"
+import { User, Trophy, Home, Info, LogOut } from "lucide-react"
+import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect, useRef } from "react"
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsLoggedIn(!!data.session);
+    };
+    checkSession();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -60,12 +84,24 @@ export function Navbar() {
 
           {/* Login Button */}
           <div className="flex items-center space-x-4">
-            <Link href="/login" passHref legacyBehavior>
-              <Button variant="outline" size="sm" className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
-                <User className="h-4 w-4" />
-                <span>Login</span>
+            {isLoggedIn ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
               </Button>
-            </Link>
+            ) : (
+              <Link href="/login" passHref legacyBehavior>
+                <Button variant="outline" size="sm" className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
+                  <User className="h-4 w-4" />
+                  <span>Login</span>
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <div className="flex flex-col items-center md:hidden">
@@ -113,12 +149,24 @@ export function Navbar() {
                 <Info className="h-4 w-4" />
                 <span>About Us</span>
               </Link>
-              <Link href="/login" passHref legacyBehavior>
-                <Button variant="outline" size="sm" className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
-                  <User className="h-4 w-4" />
-                  <span>Login</span>
+              {isLoggedIn ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
                 </Button>
-              </Link>
+              ) : (
+                <Link href="/login" passHref legacyBehavior>
+                  <Button variant="outline" size="sm" className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
+                    <User className="h-4 w-4" />
+                    <span>Login</span>
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         )}

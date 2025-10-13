@@ -1,23 +1,34 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { createClient } from '@supabase/supabase-js';
 import { Button } from "@/components/ui/button";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with Supabase or your auth provider
     if (!email || !password) {
       setError("Email and password are required.");
       return;
     }
     setError("");
-    // Simulate login
-    alert("Login submitted! (Integrate with backend)");
+    // Supabase login
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    // Redirect or show success
+    window.location.href = "/";
   };
 
   return (
