@@ -60,10 +60,12 @@ export function Navbar() {
 
           {/* Login Button */}
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
-              <User className="h-4 w-4" />
-              <span>Login</span>
-            </Button>
+            <Link href="/login" passHref legacyBehavior>
+              <Button variant="outline" size="sm" className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
+                <User className="h-4 w-4" />
+                <span>Login</span>
+              </Button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <div className="flex flex-col items-center md:hidden">
@@ -111,10 +113,12 @@ export function Navbar() {
                 <Info className="h-4 w-4" />
                 <span>About Us</span>
               </Link>
-              <Button variant="outline" size="sm" className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
-                <User className="h-4 w-4" />
-                <span>Login</span>
-              </Button>
+              <Link href="/login" passHref legacyBehavior>
+                <Button variant="outline" size="sm" className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
+                  <User className="h-4 w-4" />
+                  <span>Login</span>
+                </Button>
+              </Link>
             </div>
           </div>
         )}
