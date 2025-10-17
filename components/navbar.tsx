@@ -169,15 +169,6 @@ export function Navbar() {
               {isLoggedIn ? (
                 <div className="flex items-center space-x-2">
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    className="flex items-center justify-center text-accent hover:bg-gray-800"
-                    onClick={() => setShowProfile(true)}
-                    aria-label="Profile"
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                  <Button
                     variant="outline"
                     size="sm"
                     className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
@@ -185,6 +176,15 @@ export function Navbar() {
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Logout</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="flex items-center justify-center text-accent hover:bg-gray-800"
+                    onClick={() => setShowProfile(true)}
+                    aria-label="Profile"
+                  >
+                    <User className="h-5 w-5" />
                   </Button>
                 </div>
               ) : (
