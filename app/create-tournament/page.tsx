@@ -186,29 +186,19 @@ export default function CreateTournamentPage() {
   const handleStartTournament = async () => {
     if (generatedTournament?.id) {
       try {
-        // Update tournament status from 'draft' to accepted status values
-        // Try common tournament status values that might be in the constraint
-        const statusesToTry = ['started', 'in_progress', 'ongoing', 'live', 'running'];
-        let updateSuccess = false;
+        // Update tournament status from 'draft' to 'ongoing'
+        const { error } = await supabase
+          .from('tournaments')
+          .update({ 
+            status: 'ongoing',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', generatedTournament.id);
 
-        for (const status of statusesToTry) {
-          const { error } = await supabase
-            .from('tournaments')
-            .update({ 
-              status: status,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', generatedTournament.id);
-
-          if (!error) {
-            console.log(`Tournament status updated to: ${status}`);
-            updateSuccess = true;
-            break;
-          }
-        }
-
-        if (!updateSuccess) {
-          console.log('Could not update status, continuing with draft status');
+        if (error) {
+          console.error('Error updating tournament status:', error);
+        } else {
+          console.log('Tournament status updated to: ongoing');
         }
 
         // Redirect to tournament bracket

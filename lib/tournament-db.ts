@@ -1,6 +1,10 @@
 import { supabase } from './supabase'
 
 export async function createTournamentInDB(name: string, players: string[], handicaps: (number | null)[]) {
+  // Get current user's ID from Supabase Auth
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
   // Insert tournament
   const { data: tournament, error: tournamentError } = await supabase
     .from('tournaments')
@@ -8,6 +12,7 @@ export async function createTournamentInDB(name: string, players: string[], hand
       name,
       total_players: players.length,
       status: 'draft',
+      owner_id: user.id
     })
     .select()
     .single()
@@ -75,4 +80,20 @@ function generateMatchesData(tournamentId: string, playerCount: number) {
   }
 
   return matches
+}
+
+export async function getTournamentsForCurrentUser() {
+  // Get current user's ID from Supabase Auth
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
+  // Get only tournaments owned by the current user
+  const { data: tournaments, error } = await supabase
+    .from('tournaments')
+    .select()
+    .eq('owner_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return tournaments;
 }
