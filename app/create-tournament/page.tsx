@@ -39,6 +39,20 @@ export default function CreateTournamentPage() {
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [isCreatingBracket, setIsCreatingBracket] = useState(false);
 
+  // Auth state
+  const [showAuthWarning, setShowAuthWarning] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setShowAuthWarning(true);
+      }
+      setCheckingAuth(false);
+    }
+    checkAuth();
+  }, []);
+
   // Check if form has data
   const hasFormData = tournamentName.trim() !== "" || players.some(name => name.trim() !== "");
 
@@ -211,6 +225,31 @@ export default function CreateTournamentPage() {
       }
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#18181b] to-[#23272f] text-white">
+        <div className="text-lg animate-pulse">Checking authentication...</div>
+      </div>
+    );
+  }
+
+  if (showAuthWarning) {
+    return (
+      <Dialog open={true}>
+        <DialogContent className="bg-[#18181b] border-gray-700 text-white max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              You must be logged in to create a tournament.<br />
+              Please <Link href="/login" className="text-accent underline">login</Link> or <Link href="/register" className="text-accent underline">register</Link> first.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white py-12">
       <div className="max-w-2xl mx-auto">
