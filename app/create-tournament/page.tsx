@@ -321,7 +321,7 @@ export default function CreateTournamentPage() {
                 disabled={!allNamesFilled}
                 onClick={() => setIsSaved(true)}
               >
-                Simpan
+                Save
               </Button>
               <Button
                 variant="outline"
@@ -409,9 +409,9 @@ export default function CreateTournamentPage() {
       <Dialog open={showExitWarning} onOpenChange={setShowExitWarning}>
         <DialogContent className="bg-[#18181b] border-gray-700 text-white">
           <DialogHeader>
-            <DialogTitle>Peringatan</DialogTitle>
+            <DialogTitle>Warning!</DialogTitle>
             <DialogDescription className="text-gray-300">
-              Anda memiliki data yang belum disimpan. Apa yang ingin Anda lakukan?
+              You have unsaved changes. What would you like to do?
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-4 mt-6">

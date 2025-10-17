@@ -29,19 +29,19 @@ export default function TournamentsListPage() {
 	return (
 		<main className="min-h-screen bg-gradient-to-br from-[#18181b] to-[#23272f] text-white py-12">
 			<div className="max-w-2xl mx-auto">
-				<h1 className="text-3xl font-bold mb-8 text-center">Daftar Turnamen</h1>
+				<h1 className="text-3xl font-bold mb-8 text-center">Tournaments</h1>
 				{loading && <div className="text-center py-8">Loading...</div>}
 				{error && <div className="text-center py-8 text-red-500">{error}</div>}
 				{!loading && !error && (
 					<ul className="space-y-4">
 						{tournaments.length === 0 ? (
-							<li className="text-center text-gray-400">Belum ada turnamen.</li>
+							<li className="text-center text-gray-400">No tournaments found</li>
 						) : (
 							tournaments.map((tournament) => (
 								<li key={tournament.id} className="bg-[#23272f] rounded-lg shadow p-4 flex justify-between items-center">
 									<div>
 										<div className="text-lg font-semibold">{tournament.name}</div>
-										<div className="text-sm text-gray-400">{tournament.total_players} pemain</div>
+										<div className="text-sm text-gray-400">{tournament.total_players} players</div>
 										<div className="text-sm mt-1">
 											Status: <span className={`px-2 py-1 rounded text-xs font-medium ${
 												tournament.status === 'draft' ? 'bg-yellow-600 text-yellow-100' :
@@ -51,12 +51,7 @@ export default function TournamentsListPage() {
 												tournament.status === 'completed' ? 'bg-gray-600 text-gray-100' :
 												'bg-gray-500 text-gray-100'
 											}`}>
-												{tournament.status === 'draft' ? 'Draft' :
-												 tournament.status === 'started' ? 'Dimulai' :
-												 tournament.status === 'in_progress' ? 'Berlangsung' :
-												 tournament.status === 'ongoing' ? 'Berlangsung' :
-												 tournament.status === 'completed' ? 'Selesai' :
-												 tournament.status || 'Unknown'}
+												{tournament.status || 'Unknown'}
 											</span>
 										</div>
 									</div>
@@ -64,7 +59,7 @@ export default function TournamentsListPage() {
 										href={`/tournaments/${tournament.id}/bracket`}
 										className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800 transition"
 									>
-										Lihat Bracket
+										Open
 									</Link>
 								</li>
 							))
