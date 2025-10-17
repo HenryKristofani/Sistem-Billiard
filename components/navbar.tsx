@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button"
 import { User, Trophy, Home, Info, LogOut } from "lucide-react"
 import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect, useRef } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+  const [userEmail, setUserEmail] = useState<string>("")
   const navRef = useRef<HTMLDivElement>(null)
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,10 +21,12 @@ export function Navbar() {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       setIsLoggedIn(!!data.session);
+      setUserEmail(data.session?.user?.email || "")
     };
     checkSession();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email || "")
     });
     return () => {
       listener.subscription.unsubscribe();
@@ -30,6 +35,7 @@ export function Navbar() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
+    setUserEmail("");
     window.location.href = "/";
   };
 
@@ -85,15 +91,26 @@ export function Navbar() {
           {/* Login Button */}
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden sm:flex items-center justify-center text-accent hover:bg-gray-800"
+                  onClick={() => setShowProfile(true)}
+                  aria-label="Profile"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </>
             ) : (
               <Link href="/login" passHref legacyBehavior>
                 <Button variant="outline" size="sm" className="hidden sm:flex items-center space-x-2 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
@@ -150,15 +167,26 @@ export function Navbar() {
                 <span>About Us</span>
               </Link>
               {isLoggedIn ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="flex items-center justify-center text-accent hover:bg-gray-800"
+                    onClick={() => setShowProfile(true)}
+                    aria-label="Profile"
+                  >
+                    <User className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </Button>
+                </div>
               ) : (
                 <Link href="/login" passHref legacyBehavior>
                   <Button variant="outline" size="sm" className="flex items-center space-x-2 w-fit bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
@@ -171,6 +199,17 @@ export function Navbar() {
           </div>
         )}
       </div>
+      <Dialog open={showProfile} onOpenChange={setShowProfile}>
+        <DialogContent className="bg-[#18181b] border-gray-700 text-white max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle>Profile</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              <div className="mb-2">Logged in as:</div>
+              <div className="font-bold text-lg text-accent">{userEmail}</div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </nav>
   )
 }
