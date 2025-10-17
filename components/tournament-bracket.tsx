@@ -67,7 +67,7 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
 
   return (
     <div className="w-full bg-gradient-to-br from-[#0f0f10] to-[#1a1a1d]">
-      <div className="sticky top-0 left-0 w-full z-50 bg-[#0f0f10] py-4 px-4 shadow-lg border-b border-gray-800">
+      <div className="sticky top-16 left-0 w-full z-40 bg-[#0f0f10] py-4 px-4 shadow-lg border-b border-gray-800">
         <div className="max-w-md mx-auto flex flex-col gap-4">
           <input
             type="text"
