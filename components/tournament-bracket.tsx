@@ -8,9 +8,10 @@ import { toast } from "sonner"
 interface TournamentBracketProps {
   tournament: Tournament
   onTournamentUpdate: () => Promise<void>
+  currentUserId?: string | null
 }
 
-export function TournamentBracket({ tournament, onTournamentUpdate }: TournamentBracketProps) {
+export function TournamentBracket({ tournament, onTournamentUpdate, currentUserId }: TournamentBracketProps) {
   const [search, setSearch] = useState("")
   const [zoom, setZoom] = useState(1)
 
@@ -202,7 +203,13 @@ export function TournamentBracket({ tournament, onTournamentUpdate }: Tournament
                         className="absolute left-0" 
                         style={{ top: `${yPos}px`, zIndex: 1 }}
                       >
-                        <MatchCard match={match} onUpdateMatch={handleMatchUpdate} tournamentStatus={tournament.status} />
+                        <MatchCard 
+                          match={match} 
+                          onUpdateMatch={handleMatchUpdate} 
+                          tournamentStatus={tournament.status}
+                          tournamentOwnerId={tournament.owner_id}
+                          currentUserId={currentUserId}
+                        />
                       </div>
                      </div>
                   )

@@ -22,27 +22,59 @@ interface MatchCardProps {
   match: Match
   onUpdateMatch: (matchId: string, winnerId: number, score1: number, score2: number) => void
   tournamentStatus?: string
+  tournamentOwnerId?: string | null
+  currentUserId?: string | null
 }
 
-export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardProps) {
+export function MatchCard({ match, onUpdateMatch, tournamentStatus, tournamentOwnerId, currentUserId }: MatchCardProps) {
   const [score1, setScore1] = useState(match.score1?.toString() || "")
   const [score2, setScore2] = useState(match.score2?.toString() || "")
   const [isOpen, setIsOpen] = useState(false)
 
   const handleSubmit = (winnerId: number) => {
+    // First check if user is owner
+    if (!currentUserId || !tournamentOwnerId || currentUserId !== tournamentOwnerId) {
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Unauthorized: Only tournament owner can update scores')
+      } else {
+        alert('Unauthorized: Only tournament owner can update scores')
+      }
+      setIsOpen(false)
+      return
+    }
+
+    // Check if tournament is ongoing
+    if (tournamentStatus !== 'ongoing') {
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Tournament not started')
+      } else {
+        alert('Tournament not started')
+      }
+      setIsOpen(false)
+      return
+    }
+
     const s1 = Number.parseInt(score1) || 0
     const s2 = Number.parseInt(score2) || 0
     
     // Validasi sederhana
     if (s1 < 0 || s2 < 0) {
-      alert('Score tidak boleh negatif')
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Score tidak boleh negatif')
+      } else {
+        alert('Score tidak boleh negatif')
+      }
       return
     }
     
     // Pastikan winner sesuai dengan skor tertinggi
     if ((winnerId === match.player1?.id && s1 <= s2) || 
         (winnerId === match.player2?.id && s2 <= s1)) {
-      alert('Pemenang harus memiliki skor lebih tinggi')
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Pemenang harus memiliki skor lebih tinggi')
+      } else {
+        alert('Pemenang harus memiliki skor lebih tinggi')
+      }
       return
     }
     
@@ -51,7 +83,8 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardP
   }
 
   const canPlay = match.player1 && match.player2
-  const canSetScore = canPlay && !match.isCompleted && tournamentStatus === 'ongoing'
+  const isOwner = currentUserId && tournamentOwnerId && currentUserId === tournamentOwnerId
+  const canSetScore = canPlay && !match.isCompleted && tournamentStatus === 'ongoing' && isOwner
 
   const handleSetScoreClick = () => {
     if (tournamentStatus !== 'ongoing') {
@@ -59,6 +92,14 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardP
         window.toast.error('Turnamen belum dimulai')
       } else {
         alert('Turnamen belum dimulai')
+      }
+      return
+    }
+    if (!isOwner) {
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error('Hanya owner turnamen yang dapat mengatur skor')
+      } else {
+        alert('Hanya owner turnamen yang dapat mengatur skor')
       }
       return
     }
@@ -127,7 +168,21 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus }: MatchCardP
           >
             Set Score
           </Button>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <Dialog 
+            open={isOpen && isOwner} 
+            onOpenChange={(open) => {
+              // Only allow opening if user is owner
+              if (!isOwner) {
+                if (typeof window !== 'undefined' && window.toast) {
+                  window.toast.error('Unauthorized: Only tournament owner can update scores')
+                } else {
+                  alert('Unauthorized: Only tournament owner can update scores')
+                }
+                return
+              }
+              setIsOpen(open)
+            }}
+          >
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>Match Result</DialogTitle>

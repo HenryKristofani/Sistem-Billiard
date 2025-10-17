@@ -26,4 +26,5 @@ export interface Tournament {
   totalRounds: number
   matches: Match[]
   players: Player[]
+  owner_id?: string | null
 }

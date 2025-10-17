@@ -180,6 +180,7 @@ export default function CreateTournamentPage() {
       matches: enrichedMatches,
       totalRounds,
       totalPlayers: tournament.total_players,
+      owner_id: tournament.owner_id
     };
   }
   // Handler for starting tournament (redirect)
@@ -338,7 +339,11 @@ export default function CreateTournamentPage() {
         {showBracket && generatedTournament && (
           <div className="mt-8">
             <div className="mb-4 text-xl font-bold text-white">Preview Bracket</div>
-            <TournamentBracket tournament={generatedTournament} onTournamentUpdate={async () => {}} />
+            <TournamentBracket 
+              tournament={generatedTournament} 
+              onTournamentUpdate={async () => {}}
+              currentUserId={generatedTournament.owner_id} // Pass owner_id as currentUserId since this is the tournament creation page
+            />
             <div className="flex justify-center mt-6">
               <Button
                 className="bg-green-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow w-full max-w-2xl"
