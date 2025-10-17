@@ -158,13 +158,13 @@ export function MatchCard({ match, onUpdateMatch, tournamentStatus, tournamentOw
           </div>
         </CardContent>
       </Card>
-      {canPlay && !match.isCompleted && tournamentStatus === 'ongoing' && (
+      {canSetScore && (
         <>
           <Button
             size="sm"
             variant="outline"
             className="h-6 text-xs bg-transparent mt-2"
-            onClick={() => setIsOpen(true)}
+            onClick={handleSetScoreClick}
           >
             Set Score
           </Button>
