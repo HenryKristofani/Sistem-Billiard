@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { User, Trophy, Home, Info, LogOut } from "lucide-react"
+import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect, useRef } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -57,7 +58,9 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Trophy className="h-8 w-8 text-accent" />
+            <div className="relative h-8 w-8">
+              <Image src="/icon.png" alt="BilliardPro logo" fill sizes="32px" className="object-contain" />
+            </div>
             <span className="text-xl font-bold text-white">
               Billiard<span className="text-accent">Pro</span>
             </span>
