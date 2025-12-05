@@ -42,6 +42,7 @@ export default function TournamentsListPage() {
 									<div>
 										<div className="text-lg font-semibold">{tournament.name}</div>
 										<div className="text-sm text-gray-400">{tournament.total_players} players</div>
+										<div className="text-xs text-gray-500 mt-1">by (pembuat bracket)</div>
 										<div className="text-sm mt-1">
 											Status: <span className={`px-2 py-1 rounded text-xs font-medium ${
 												tournament.status === 'draft' ? 'bg-yellow-600 text-yellow-100' :

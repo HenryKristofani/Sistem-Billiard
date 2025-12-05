@@ -10,6 +10,7 @@ const supabase = createClient(
 );
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,15 +18,23 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Email and password are required.");
+    if (!name || !email || !password) {
+      setError("Name, email and password are required.");
       setSuccess("");
       return;
     }
     setError("");
     setSuccess("");
     // Supabase register
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        data: {
+          display_name: name
+        }
+      }
+    });
     if (error) {
       setError(error.message);
       return;
@@ -38,6 +47,17 @@ export default function RegisterPage() {
       <div className="w-full max-w-md bg-[#18181b]/90 rounded-2xl shadow-2xl p-8 border border-gray-800">
         <h1 className="text-3xl font-bold mb-6 text-center text-white">Register</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-[#23272f] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent"
+              required
+            />
+          </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
             <input
