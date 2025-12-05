@@ -13,6 +13,7 @@ export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const [userEmail, setUserEmail] = useState<string>("")
+  const [displayName, setDisplayName] = useState<string>("")
   const navRef = useRef<HTMLDivElement>(null)
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,12 +23,14 @@ export function Navbar() {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       setIsLoggedIn(!!data.session);
-      setUserEmail(data.session?.user?.email || "")
+      setUserEmail(data.session?.user?.email || "");
+      setDisplayName(data.session?.user?.user_metadata?.display_name || "");
     };
     checkSession();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session);
-      setUserEmail(session?.user?.email || "")
+      setUserEmail(session?.user?.email || "");
+      setDisplayName(session?.user?.user_metadata?.display_name || "");
     });
     return () => {
       listener.subscription.unsubscribe();
@@ -207,8 +210,10 @@ export function Navbar() {
           <DialogHeader>
             <DialogTitle>Profile</DialogTitle>
             <DialogDescription className="text-gray-300">
-              <div className="mb-2">Logged in as:</div>
-              <div className="font-bold text-lg text-accent">{userEmail}</div>
+              <div className="mb-2">Name:</div>
+              <div className="font-bold text-lg text-accent">{displayName || <span className="text-gray-500">(not set)</span>}</div>
+              <div className="mt-2">Email:</div>
+              <div className="font-bold text-base text-white">{userEmail}</div>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
