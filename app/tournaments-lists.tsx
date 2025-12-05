@@ -7,6 +7,7 @@ export default function TournamentsListPage() {
 	const [tournaments, setTournaments] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [ownerNames, setOwnerNames] = useState<{[key: string]: string}>({});
 
 	useEffect(() => {
 		async function fetchTournaments() {
@@ -17,6 +18,31 @@ export default function TournamentsListPage() {
 					.order("created_at", { ascending: false });
 				if (error) throw error;
 				setTournaments(data || []);
+				
+				// Fetch owner names for each tournament
+				if (data && data.length > 0) {
+					const ownerIds = [...new Set(data.map(t => t.owner_id).filter(Boolean))];
+					const nameMap: {[key: string]: string} = {};
+					
+					// Try to get current user info if they are the owner
+					const { data: { user } } = await supabase.auth.getUser();
+					
+					for (const ownerId of ownerIds) {
+						if (user && user.id === ownerId) {
+							// Current user - get from their metadata
+							nameMap[ownerId] = user.user_metadata?.display_name || user.email?.split('@')[0] || 'You';
+						} else {
+							// Other users - try to get from tournaments metadata or use fallback
+							const tournament = data.find(t => t.owner_id === ownerId);
+							if (tournament?.owner_name) {
+								nameMap[ownerId] = tournament.owner_name;
+							} else {
+								nameMap[ownerId] = 'Tournament Creator';
+							}
+						}
+					}
+					setOwnerNames(nameMap);
+				}
 			} catch (err: any) {
 				setError(err.message || "Failed to fetch tournaments");
 			} finally {
@@ -42,7 +68,7 @@ export default function TournamentsListPage() {
 									<div>
 										<div className="text-lg font-semibold">{tournament.name}</div>
 										<div className="text-sm text-gray-400">{tournament.total_players} players</div>
-										<div className="text-xs text-gray-500 mt-1">by (pembuat bracket)</div>
+										<div className="text-xs text-gray-500 mt-1">by {ownerNames[tournament.owner_id] || 'Unknown User'}</div>
 										<div className="text-sm mt-1">
 											Status: <span className={`px-2 py-1 rounded text-xs font-medium ${
 												tournament.status === 'draft' ? 'bg-yellow-600 text-yellow-100' :
